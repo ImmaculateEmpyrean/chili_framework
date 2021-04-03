@@ -50,7 +50,7 @@ public:
 
 			return vert;
 		}
-		vertex& operator+=(vertex& rhs)
+		vertex& operator+=(const vertex& rhs)
 		{
 			m_position = m_position + rhs.m_position;
 			m_uv_coordinates = m_uv_coordinates + rhs.m_uv_coordinates;
@@ -64,7 +64,7 @@ public:
 			vert.m_uv_coordinates = m_uv_coordinates - rhs.m_uv_coordinates;
 			return vert;
 		}
-		vertex operator-=(vertex& rhs)
+		vertex operator-=(const vertex& rhs)
 		{
 			m_position = m_position - rhs.m_position;
 			m_uv_coordinates = m_uv_coordinates - rhs.m_uv_coordinates;
@@ -79,7 +79,13 @@ public:
 			vert.m_uv_coordinates = m_uv_coordinates / rhs;
 			return vert;
 		}
-
+		vertex operator*(const float rhs) const
+		{
+			vertex vert;
+			vert.m_position = m_position * rhs;
+			vert.m_uv_coordinates = m_uv_coordinates * rhs;
+			return vert;
+		}
 
 	public:
 		Vec3 m_position = Vec3(-99.0f, -99.0f, -99.0f); //this variable with the very same name is mandatory and the pipeline expects said variable

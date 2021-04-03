@@ -92,18 +92,35 @@ private:
 
 		///case for p1 and p2 y value equal not handled.. basically.. no natural flat bottom is being handled..
 		if (p1->m_position.y == p2->m_position.y) //natural flat bottom
+		{
+			if (p1->m_position.x > p2->m_position.x)
+				std::swap(p1, p2);
 			drawFlatBottomTriangle(*p0, *p1, *p2);
+		}
 		else if (p0->m_position.y == p1->m_position.y) //natural flat top
-			drawFlatTopTriangle(*p2, *p0, *p1);
+		{
+			if (p0->m_position.x > p1->m_position.x)
+				std::swap(p0, p1);
+			drawFlatTopTriangle(*p0, *p1, *p2);
+		}
 		else
 		{
 			//normal triangle which needs to be split into natural flat bottom and natural flat top
 			float alphaSplit = (p1->m_position.y - p0->m_position.y) / (p2->m_position.y - p0->m_position.y);
 			vertex splitPoint = p0->interpolateTo(*p2, alphaSplit);
 
-			//draw flat bottom and flat top
-			drawFlatBottomTriangle(*p0, *p1, splitPoint); //flat bottom triangle
-			drawFlatTopTriangle(*p2, *p1, splitPoint); //flat top triangle
+			if (splitPoint.m_position.x < p1->m_position.x)
+			{
+				//majorLeft triangle
+				drawFlatBottomTriangle	(*p0, splitPoint, *p1);
+				drawFlatTopTriangle		(splitPoint, *p1, *p2);
+			}
+			else
+			{
+				//majorRight triangle
+				drawFlatBottomTriangle(*p0, *p1, splitPoint);
+				drawFlatTopTriangle(*p1, splitPoint, *p2);
+			}
 		}
 	}
 
@@ -111,71 +128,71 @@ private:
 private:
 	void drawFlatBottomTriangle(const vertex& vertex0, const vertex& vertex1, const vertex& vertex2)
 	{
-		//v1 and v2 form the straight line always and v0 is to the top of p1 and p2..
 		const vertex* v0 = &vertex0;
 		const vertex* v1 = &vertex1;
 		const vertex* v2 = &vertex2;
 
-		//see that p1 is to the left of p2 always.
-		if (v1->m_position.x > v2->m_position.x)
-			std::swap(v1, v2);
-
 		vertex leftEdge		= *v0;
 		vertex rightEdge	= *v0;
 		vertex leftEdgeEnd	= *v1;
+		vertex rightEdgeEnd	= *v2;
+
+		vertex leftEdgeDelta = (leftEdgeEnd - leftEdge) / (leftEdgeEnd.m_position - leftEdge.m_position).y;
+		vertex rightEdgeDelta = (rightEdgeEnd - rightEdge) / (rightEdgeEnd.m_position - rightEdge.m_position).y;
+
+		drawFlatTriangle(*v0,*v1,*v2,  leftEdgeDelta, rightEdgeDelta, *v0);
+	}
+	void drawFlatTopTriangle(const vertex& vertex0, const vertex& vertex1, const vertex& vertex2)
+	{
+		const vertex* v0 = &vertex0;
+		const vertex* v1 = &vertex1;
+		const vertex* v2 = &vertex2;
+
+		vertex leftEdge = *v0;
+		vertex rightEdge = *v1;
+		vertex leftEdgeEnd = *v2;
 		vertex rightEdgeEnd = *v2;
 
 		vertex leftEdgeDelta = (leftEdgeEnd - leftEdge) / (leftEdgeEnd.m_position - leftEdge.m_position).y;
 		vertex rightEdgeDelta = (rightEdgeEnd - rightEdge) / (rightEdgeEnd.m_position - rightEdge.m_position).y;
 
-		//prestepping to stop division by zero
-		leftEdge += leftEdgeDelta;
-		rightEdge += rightEdgeDelta;
-
-		drawFlatTriangle(leftEdge, rightEdge, leftEdgeEnd, rightEdgeEnd,leftEdgeDelta,rightEdgeDelta);
+		drawFlatTriangle(*v0, *v1, *v2, leftEdgeDelta, rightEdgeDelta, *v1);
 	}
-	void drawFlatTopTriangle(const vertex& vertex0, const vertex& vertex1, const vertex& vertex2)
+	void drawFlatTriangle(const vertex& v0, const vertex& v1, const vertex& v2, const vertex& dv0 , const vertex& dv1, vertex itEdge1)
 	{
-		//p1 and p2 form the straight line always and p0 is to the bottom of p1 and p2..
-		const vertex* v0 = &vertex0;
-		const vertex* v1 = &vertex1;
-		const vertex* v2 = &vertex2;
+		auto itEdge0 = v0;
 
-		//see that p1 is to the left of p2 always.
-		if (v1->m_position.x > v2->m_position.x)
-			std::swap(v1, v2);
+		const int yStart = (int)std::ceil(v0.m_position.y - 0.5f);
+		const int yEnd   = (int)std::ceil(v2.m_position.y - 0.5f);
 
-		vertex leftEdge		= *v1;
-		vertex rightEdge	= *v2;
-		vertex leftEdgeEnd	= *v0;
-		vertex rightEdgeEnd = *v0;
+		itEdge0 += dv0 * (float(yStart) + 0.5f - v0.m_position.y); //pre step something like less than a pixel ?
+		itEdge1 += dv1 * (float(yStart) + 0.5f - v0.m_position.y); //pre step something like less than a pixel ?
 
-		vertex leftEdgeDelta = (leftEdgeEnd - leftEdge) / (leftEdgeEnd.m_position - leftEdge.m_position).y;
-		vertex rightEdgeDelta = (rightEdgeEnd - rightEdge) / (rightEdgeEnd.m_position - rightEdge.m_position).y;
-
-		drawFlatTriangle(leftEdge, rightEdge, leftEdgeEnd, rightEdgeEnd,leftEdgeDelta, rightEdgeDelta);
-	}
-	void drawFlatTriangle(vertex leftEdge,vertex rightEdge,vertex leftEdgeEnd,vertex rightEdgeEnd,vertex leftEdgeDelta,vertex rightEdgeDelta)
-	{
-		//this function may fail thanks to a division by zero when calculating deltaX
-		for (; leftEdge.m_position.y <= leftEdgeEnd.m_position.y; leftEdge += leftEdgeDelta, rightEdge += rightEdgeDelta)
+		for (int y = yStart; y < yEnd; y++, itEdge0 += dv0, itEdge1 += dv1)
 		{
-			vertex yStart = leftEdge;
-			vertex yEnd = rightEdge;
+			const int xStart = std::ceil(itEdge0.m_position.x - 0.5f);
+			const int xEnd	 = std::ceil(itEdge1.m_position.x - 0.5f);
 
-			vertex deltaX = (yEnd - yStart) / (yEnd.m_position - yStart.m_position).x;
+			auto iLine = itEdge0;
 
-			for (; yStart.m_position.x <= yEnd.m_position.x; yStart += deltaX)
+			const float dx = itEdge1.m_position.x - itEdge0.m_position.x;
+			const auto diLine = (itEdge1 - itEdge0) / dx;
+
+			//pre stepping
+			iLine += diLine * (float(xStart) + 0.5 - itEdge0.m_position.x);
+
+			for (int x = xStart; x < xEnd; x++, iLine += diLine)
 			{
-				gfx->PutPixel(yStart.m_position.x, yStart.m_position.y, m_effectFunctor.ps(yStart));
+				gfx->PutPixel(x, y, m_effectFunctor.ps(iLine));
 			}
+
 		}
 	}
 
 private:
-	Mat3 m_rotationMatrix; //the rotation is on model centre
-	Vec3 m_translation; // the translation is with respect to the model centre
-	Graphics* gfx;
+	Mat3 m_rotationMatrix = Mat3::Identity(); //the rotation is on model centre
+	Vec3 m_translation = Vec3(0.0f,0.0f,0.0f); // the translation is with respect to the model centre
+	Graphics* gfx = nullptr;
 
 	effect m_effectFunctor;
 
