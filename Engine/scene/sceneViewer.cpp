@@ -13,6 +13,8 @@ void sceneViewer::updateDraw()
 				currentScene++;
 			else if (currentScene != -1)
 				currentScene = 0;
+
+			pressed = true;
 		}
 	}
 	else pressed = false;
