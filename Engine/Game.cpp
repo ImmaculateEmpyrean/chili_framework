@@ -25,7 +25,7 @@
 #include "log/Log.h"
 
 #include "scene/collection/texturedCubeScene.h"
-
+#include "scene/collection/colorInterpolationScene.h"
 
 Game::Game(MainWindow& wnd)
 	:
@@ -35,6 +35,7 @@ Game::Game(MainWindow& wnd)
 {
 	//add all the relevant scenes once into the viewer
 	m_viewer.addScene<texturedCubeScene>();
+	m_viewer.addScene<colorInterpolationScene>();
 }
 
 void Game::Go()

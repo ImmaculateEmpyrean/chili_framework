@@ -37,3 +37,33 @@ std::vector<std::uint32_t> cube::getSkinnedCubeIndices()
 
 	return m_indexBuffer;
 }
+
+
+std::vector<colorEffect::vertex> cube::getColorEffectCubeVertices(float side)
+{
+	static std::vector<colorEffect::vertex> m_vertexBuffer{
+		{Vec3(side, side, side),Vec3(0.0f, 0.0f,1.0f)},		//0
+		{Vec3(-side, side, side),Vec3(1.0f, 0.0f,0.0f)},	//1
+		{Vec3(-side, side, -side),Vec3(0.0f, 1.0f,0.0f)},  //2
+		{Vec3(side, side, -side),Vec3(0.0f, 0.5f , 0.0f)},	//3
+
+		{Vec3(-side, -side, side),Vec3(0.0f, 0.0f , 1.0f)},	//4
+		{Vec3(-side, -side, -side),Vec3(0.0f, 1.0f , 0.0f)},	//5
+		{Vec3(-side, side, side),Vec3(1.0f, 0.0f , 0.0f)},	//6
+		{Vec3(side, side, side),Vec3(1.0f, 0.0f,1.0f)},	//7
+
+		{Vec3(side, -side, side),Vec3(0.0f, 0.0f , 1.0f)},	//8
+		{Vec3(side, -side, -side),Vec3(1.0f, 0.0f , 0.0f)},	//9
+		{Vec3(side, side, -side),Vec3(0.0f, 1.0f , 0.0f)},	//10
+		{Vec3(-side, side, -side),Vec3(0.5f, 1.0f,0.0f)},	//11
+
+		{Vec3(side, side, -side),Vec3(1.0f, 0.0f,1.0f)},	//12
+		{Vec3(side, side, side), Vec3(1.0f, 0.5f,1.0f)},	//13
+	};
+
+	return m_vertexBuffer;
+}
+std::vector<std::uint32_t> cube::getColorEffectCubeIndices()
+{
+	return getSkinnedCubeIndices();
+}

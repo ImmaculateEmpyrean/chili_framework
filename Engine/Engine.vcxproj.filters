@@ -114,6 +114,9 @@
     <ClInclude Include="effects\colorEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="scene\collection\colorInterpolationScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dataStructure\vertex\texturedVertex.cpp">

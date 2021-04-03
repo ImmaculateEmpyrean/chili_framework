@@ -187,6 +187,7 @@
     <ClInclude Include="models\cube.h" />
     <ClInclude Include="pipeline\pipeline.h" />
     <ClInclude Include="pipeline\pubeToScreenTransformer.h" />
+    <ClInclude Include="scene\collection\colorInterpolationScene.h" />
     <ClInclude Include="scene\collection\texturedCubeScene.h" />
     <ClInclude Include="scene\scene.h" />
     <ClInclude Include="scene\sceneViewer.h" />
