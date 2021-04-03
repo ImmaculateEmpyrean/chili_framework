@@ -16,7 +16,6 @@ class texturedCubeScene : public scene
 public:
 	texturedCubeScene(MainWindow* wnd,Graphics* gfx)
 		:	scene(wnd,gfx),
-			cub(0.5f),
 			pip(textureEffect(std::filesystem::path(L"resources/texture/diceUV.bmp")), gfx)
 	{}
 
@@ -30,11 +29,10 @@ public:
 	{
 		pip.bindTranslation(Vec3(0.0f, 0.0f, 2.0f)); //push the cube model by two in the z
 		pip.bindRotationMatrix(rotation);
-		pip.draw(cub.getIndexBuffer(), cub.getVertexBuffer());
+		pip.draw(cube::getSkinnedCubeIndices(), cube::getSkinnedCubeVertices());
 	}
 
 private:
 	Mat3 rotation = Mat3::Identity();
-	cube cub;
 	pipeline<textureEffect> pip;
 };

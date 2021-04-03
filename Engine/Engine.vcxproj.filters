@@ -111,6 +111,9 @@
     <ClInclude Include="scene\collection\texturedCubeScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="effects\colorEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dataStructure\vertex\texturedVertex.cpp">
@@ -147,6 +150,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scene\sceneViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="models\cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

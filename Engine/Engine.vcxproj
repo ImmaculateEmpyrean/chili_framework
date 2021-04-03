@@ -173,6 +173,7 @@
     <ClInclude Include="dataStructure\math\Vec2.h" />
     <ClInclude Include="dataStructure\math\Vec3.h" />
     <ClInclude Include="dataStructure\vertex\texturedVertex.h" />
+    <ClInclude Include="effects\colorEffect.h" />
     <ClInclude Include="effects\textureEffect.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="graphics\Colors.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="io\Mouse.cpp" />
     <ClCompile Include="log\Log.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="models\cube.cpp" />
     <ClCompile Include="scene\sceneViewer.cpp" />
     <ClCompile Include="utilities\DXErr.cpp" />
   </ItemGroup>
